@@ -20,27 +20,17 @@ const authentication = async function (req, res, next) {
 }
 
 
-const authforAdmin=async function(req,res,next){
+const authorization=async function(req,res,next){
   try {
-
-    if(req.decode.role!="Admin") return res.status(400).send({message:"you are not authorised"})
-
+    if(req.decode.role!="Admin"){
+         return res.status(403).send({message:"you are not authorised"})}
+    if(req.decode.role!="Super Admin"){
+         return res.status(403).send({message:"you are not authorised"})}
     next();
-  } catch (error) {
-    return res.status(500).send({ error: error.message });
+
+} catch (error) {
+    return res.status(500).send({ status:false,error: error.message });
   }
 }
 
-
-
-
-const authSuperAdmin=async (req,res,next)=>{
-  try {
-  if(req.decode.role!="Super Admin") return res.status(400).send({message:"you are not authorised"})
-
-  next();
-} catch (error) {
-  return res.status(500).send({ error: error.message });
-}
-}
-module.exports={authentication,authforAdmin,authSuperAdmin}
+module.exports={authentication,authorization}
