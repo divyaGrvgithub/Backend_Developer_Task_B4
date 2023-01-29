@@ -32,9 +32,9 @@ const getdata= async (req,res)=>{
             if(findData.length==0)  { 
                 return res.status(404).send({ status: false, message: "no data found" })}
             else{
-                return res.status(200).send({msg:findData})}
+                return res.status(200).send({status:true,msg:findData})}
     } catch (error) {
-        return res.status(500).send({ error: error.message });
+        return res.status(500).send({status:false, error: error.message });
     }    
     }
     
@@ -72,35 +72,27 @@ try {
              return res.status(404).send({ status: false, message: "no data found" })};
 	    
 	    const deleteData=await courseModel.updateMany({adminId:req.decode.id},{isDeleted:true})
-	   return res.status(200).send({status:true,msg:"deleted successfully",deleteData})
+	    return res.status(200).send({status:true,msg:"deleted successfully",deleteData})
 } catch (error) {
 	return res.status(500).send({ status:false, error: error.message });
 }
 }
 
-
 //<<<<<<<<<<<<<<<<<<<<<=========================approve course=================>>>>>>>>>>>>>>>>>>>>>>
-const approvedCourse=async(req,res)=>{
-    
+
+const approvedCourse=async(req,res)=>{    
 try {
-	  
-
 	    const findData=await courseModel.findOne({_id:req.params.courseId,isDeleted:false})
-	    if (!findData) { return res.status(404).send({ status: false, message: "no data found" })};
+	    if (!findData) { 
+            return res.status(404).send({ status: false, message: "no data found" })};
 	
-	    const updateData=await courseModel.findOneAndUpdate({_id:req.params.courseId},{isAprovved:true},{new:true})
-	
-	 return  res.status(200).send({data:updateData})
+	    const updateData=await courseModel.findOneAndUpdate({_id:req.params.courseId},{isAprovved:true},{new:true})	
+	    return  res.status(200).send({status:true,data:updateData})
 } catch (error) {
-	return res.status(500).send({ error: error.message });
+	return res.status(500).send({status:false,  error: error.message });
 }
 }
 
+//<<<<<<<<<<<<<<<<<<<<==============export================>>>>>>>>>>>>>>>>>>>>
 
-//==============export====================================
-
-module.exports.createCourse=createCourse
-module.exports.updateCourse=updateCourse
-module.exports.deleteData=deleteData
-module.exports.approvedCourse=approvedCourse
-module.exports.getdata=getdata
+module.exports={createCourse,getdata,updateCourse,deleteData,approvedCourse}
