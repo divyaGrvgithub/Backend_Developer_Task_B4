@@ -42,14 +42,14 @@ const logIn=async(req,res)=>{
 	
 	    const findInDb=await employeeModel.findOne({email:data.email})
 	    if(!findInDb){
-         return res.status(400).send({status:false,msg:"no data found"})}
+             return res.status(400).send({status:false,msg:"no data found"})}
 	
 	       let Password=findInDb.password
 	       let password=data.password
 		
 	    let verifyPassword=  passwordHash.verify(password, Password)
 	    if(!verifyPassword){
-               return res.status(400).send({status:false,msg:"password is incorrect"})}
+             return res.status(400).send({status:false,msg:"password is incorrect"})}
 	
 	    let token=jwt.sign({
             id:findInDb._id,
