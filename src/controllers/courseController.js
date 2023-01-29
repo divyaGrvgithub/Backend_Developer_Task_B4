@@ -1,6 +1,6 @@
 const courseModel=require("../models/courseModel")
 const axios=require("axios")
-const valid =require("../validation/joiValidation")
+const {courseJoi} =require("../validation/joiValidation")
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<=============create Course=======================>>>>>>>>>>>>>>>>>>>>>>
 
@@ -9,7 +9,7 @@ try {
 	    let data=req.body	
 	    let error = 0
 
-	    const validation = await valid.validateAsync(data).then(() => true).catch((err) => { error= err.message; return null })	
+	    const validation = await courseJoi.validateAsync(data).then(() => true).catch((err) => { error= err.message; return null })	
 	    if (!validation) return res.status(400).send({ status: false, message: `${error}` })
 	
 	    const isUrlExist = await axios.get(data.videoUrl).then(() => data.videoUrl).catch(() => null);
@@ -78,7 +78,7 @@ try {
 }
 }
 
-//<<<<<<<<<<<<<<<<<<<<<=========================approve course=================>>>>>>>>>>>>>>>>>>>>>>
+//<<<<<<<<<<<<<<<<<<<<<=====================approve course=================>>>>>>>>>>>>>>>>>>>>>>
 
 const approvedCourse=async(req,res)=>{    
 try {

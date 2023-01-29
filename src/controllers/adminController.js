@@ -1,6 +1,6 @@
-const employeeModel=require("../model/employeeModel")
+const adminModel=require("../model/adminModel")
 const passwordHash = require('password-hash');
-const valid=require("../validation/joiValidation")
+const {userJoi,loginJoi}=require("../validation/joiValidation")
 const jwt = require("jsonwebtoken");
 
 //<<<<<<<<<<<<<<============================create employee======================================>>>>>>>>>>>>>>
@@ -9,12 +9,12 @@ const createEmployee=async(req,res)=>{
 try {
 	    data=req.body
 	    let error = 0
-	    const validation = await valid.validateAsync(data).then(() => true).catch((err) => { error= err.message; return null })
+	    const validation = await userJoi.validateAsync(data).then(() => true).catch((err) => { error= err.message; return null })
 	
 	    if (!validation) {
             return res.status(400).send({ status: false, message: `${error}` })}
 	
-	    const findInDb=await employeeModel.findOne({email:data.email})
+	    const findInDb=await adminModel.findOne({email:data.email})
 	    if(findInDb) {
              return res.status(400).send({status:false, msg:"email already exist"})}
 	
@@ -22,7 +22,7 @@ try {
 	
 	    data.password=hashedPassword
 	
-	    const createData=await employeeModel.create(data)	
+	    const createData=await adminModel.create(data)	
 	    return res.status(201).send({status:true,msg:createData})
 } catch (error) {
 	return res.status(500).send({ status:false ,error: error.message });
@@ -35,12 +35,12 @@ const logIn=async(req,res)=>{
  try {
 	   data=req.body
 	    let error = 0
-	    const validation = await valid.validateAsync(data).then(() => true).catch((err) => { error= err.message; return null })
+	    const validation = await loginJoi.validateAsync(data).then(() => true).catch((err) => { error= err.message; return null })
 	
 	    if (!validation){
              return res.status(400).send({ status: false, message: `${error}` })}
 	
-	    const findInDb=await employeeModel.findOne({email:data.email})
+	    const findInDb=await adminModel.findOne({email:data.email})
 	    if(!findInDb){
              return res.status(400).send({status:false,msg:"no data found"})}
 	
